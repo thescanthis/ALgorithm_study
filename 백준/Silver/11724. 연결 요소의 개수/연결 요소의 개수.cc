@@ -1,49 +1,56 @@
-#include <iostream>
-#include <stack>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-std::vector<int>edge[1001];
-bool check[1001]={};
+int n,m;
+vector<vector<int>>v;
+bool visted[1001]={};
+int Component = 0;
 
-void DFS(int v)
+void DFS(int _v)
 {
-    check[v]=true;
-    
-    for(int i=0; i<edge[v].size(); i++)
+    stack<int>s;
+    s.push(_v);
+    visted[_v]=true;
+    while(!s.empty())
     {
-        int y=edge[v][i];
-        if(check[y]==false) DFS(y);
+        int top = s.top();
+        bool Cycle = false;
+        for(auto to : v[top])
+        {
+            if(!visted[to])
+            {
+                s.push(to);
+                visted[to]=true;
+                Cycle = true;
+                break;
+            }
+        }
+        if(!Cycle) 
+        {
+            s.pop();
+        }
     }
+    Component++;
 }
 
-int main(void)
-{
-    int n,m;
-    std::cin>>n>>m;
-    
-    for(int i=0; i<m; i++)
+int main() {
+    cin>>n>>m;
+    v.resize(n+1);
+    while(m--)
     {
         int f,t;
         std::cin>>f>>t;
-        
-        edge[f].push_back(t);
-        edge[t].push_back(f);
+        v[f].push_back(t);
+        v[t].push_back(f);
     }
     
-    
-    int cnt=0;
-    for(int i=1; i<=n; i++)
+    for(int i=1; i<v.size(); i++)
     {
-        if(check[i]==false)
+        if(!visted[i]) 
         {
             DFS(i);
-            cnt++;
         }
     }
-    
-    cout<<cnt;
-    
+    cout<<Component;
     return 0;
 }
