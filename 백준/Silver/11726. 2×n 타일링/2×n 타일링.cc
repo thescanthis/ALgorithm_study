@@ -1,17 +1,17 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-int main(void)
-{
-    int n;
-    cin >> n;
-    int arr[1001] = {};
-
-    arr[1] = 1;
-    arr[2] = 2;
-    for (int i = 3; i <= n; i++)
-        arr[i] = (arr[i - 1] + arr[i - 2])%10007;
-    std::cout << arr[n];
-
-    return 0;
+int main() {
+   
+   int n;
+   std::cin>>n;
+   int dp[1000]={};
+   dp[1]=1;
+   dp[2]=2;
+   
+   for(int i=3; i<=n; i++)
+   {
+       dp[i]=(dp[i-1]+dp[i-2])%10007;
+   }
+   cout<<dp[n];
 }
