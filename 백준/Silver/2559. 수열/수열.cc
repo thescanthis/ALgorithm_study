@@ -21,9 +21,7 @@ int main(void)
 	
 	for(int i=m; i<n; i++)
 	{
-		sum-=v[i-m];
-		sum+=v[i];
-		
+		sum=(sum-v[i-m])+v[i];
 		if(MaxSum<sum) MaxSum = sum;
 	}
 	
