@@ -1,33 +1,39 @@
 #include <iostream>
-#include <stack>
+#include <sstream>
+#include <queue>
 #include <vector>
+#include <map>
+#include <set>
+#include <stack>
+#include <algorithm>
+#include <string>
+#include <cstring>
+using namespace std;
+
+int n;
+int arr[1000001] = {};
 
 int main(void)
 {
-    int n;
-    std::cin>>n;
-    std::stack<int>st;
-    std::vector<int>v;
-    std::vector<int>ans;
-    int index=0;
-    for(int i=0; i<n; i++)
+    cin >> n;
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    stack<int> st;
+    vector<int>ans;
+    for (int i = n - 1; i >= 0; i--)
     {
-        int x;
-        std::cin>>x;
-        v.emplace_back(x);
+        while (!st.empty() && st.top() <= arr[i]) st.pop();
+
+        if (st.empty()) ans.push_back(-1);
+        else {
+            ans.push_back(st.top());
+        }
+
+        st.push(arr[i]);
     }
-    
-    for(int i=v.size()-1; i>=0; i--)
+
+    for (int i = ans.size() - 1; i >= 0; i--)
     {
-        while(!st.empty() && st.top()<=v[i]) st.pop();
-        
-        if(st.empty()) ans.emplace_back(-1);
-        else ans.emplace_back(st.top());
-        
-        st.push(v[i]);
-        
+        cout << ans[i] << " ";
     }
-    
-    for(int i=ans.size()-1; i>=0; i--) std::cout<<ans[i]<<" ";
-    return 0;
 }
