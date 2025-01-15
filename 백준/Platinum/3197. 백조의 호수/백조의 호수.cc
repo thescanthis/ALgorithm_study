@@ -15,92 +15,105 @@ using namespace std;
 #define SZ 1504
 
 int n, m;
-char arr[SZ][SZ] = {};
-int visited[SZ][SZ], visited_Swan[SZ][SZ];
 int dy[4] = { -1,0,1,0 };
 int dx[4] = { 0,1,0,-1 };
-int y,x,SwanY, SwanX, day;
-queue<pair<int, int>> waterQ, water_tempQ, swanQ, swan_tempQ;
 
-void Qclear(queue<pair<int, int>>& q)
-{
-    queue<pair<int, int>> empty;
-    swap(q, empty);
-}
+int visted[SZ][SZ],water[SZ][SZ];
+char arr[SZ][SZ];
+int _Start, _End;
+int y, x;
+queue<pair<int, int>> waterQ;
 
-void water_melting()
+bool FindSwan(queue<pair<int, int>>& q)
 {
-    while (waterQ.size())
+    visted[q.front().first][q.front().second] = true;
+    queue<pair<int, int>> Temp;
+    while (q.size())
     {
-        tie(y, x) = waterQ.front();
-        waterQ.pop();
+        tie(y, x) = q.front();
+        q.pop();
         
         for (int i = 0; i < 4; i++)
         {
             int ny = dy[i] + y;
             int nx = dx[i] + x;
 
-            if (ny < 0 || nx < 0 || ny >= n || nx >= m || visited[ny][nx]) continue;
-            
-            if (arr[ny][nx] == 'X')
-            {
-                visited[ny][nx] = true;
-                water_tempQ.push({ ny,nx });
-                arr[ny][nx] = '.';
-            }
+            if (ny < 0 || nx < 0 || ny >= n || nx >= m || visted[ny][nx]) continue;
+            visted[ny][nx] = true;
+
+            if (arr[ny][nx] == 'L')
+                return true;
+            else if (arr[ny][nx] == '.')
+                q.push({ ny,nx });
+            else if (arr[ny][nx] == 'X')
+                Temp.push({ ny,nx });
         }
     }
+
+    q = Temp;
+    return false;
 }
 
-bool move_swan()
+void FindWater()
 {
-    while (swanQ.size())
+    queue<pair<int, int>> Temp;
+    while (waterQ.size())
     {
-        tie(y, x) = swanQ.front();
-        swanQ.pop();
+        tie(y, x) = waterQ.front();
+        waterQ.pop();
 
         for (int i = 0; i < 4; i++)
         {
             int ny = dy[i] + y;
             int nx = dx[i] + x;
-            if (ny < 0 || nx < 0 || ny >= n || nx >= m || visited_Swan[ny][nx]) continue;
-            visited_Swan[ny][nx] = true;
-            if (arr[ny][nx] == '.') swanQ.push({ ny,nx });
-            else if (arr[ny][nx] == 'X') swan_tempQ.push({ ny,nx });
-            else if (arr[ny][nx] == 'L') return true;
+
+            if (ny < 0 || nx < 0 || ny >= n || nx >= m || water[ny][nx]) continue;
+            water[ny][nx] = true;
+            if (arr[ny][nx] == 'X')
+            {
+                Temp.push({ ny,nx });
+                arr[ny][nx] = '.';
+            }
         }
     }
-    return false;
+
+    waterQ = Temp;
 }
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
     cin >> n >> m;
+
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
             cin >> arr[i][j];
+            if (arr[i][j] == 'L') {
+                _Start = i;
+                _End = j;
+            }
 
-            if (arr[i][j] == 'L') { SwanY = i, SwanX = j; }
-            if (arr[i][j] == '.' || arr[i][j] == 'L') visited[i][j] = 1, waterQ.push({ i,j });
+            if (arr[i][j] == 'L' || arr[i][j] == '.')
+            {
+                waterQ.push({ i,j });
+            }
         }
     }
 
-    swanQ.push({ SwanY,SwanX });
-    visited_Swan[SwanY][SwanX] = 1;
-
-    while (true)
+    int ans = 0;
+    queue<pair<int, int>> q;
+    q.push({ _Start,_End });
+    while (waterQ.size())
     {
-        if (move_swan()) break;
-        water_melting();
-        waterQ = water_tempQ;
-        swanQ = swan_tempQ;
-        Qclear(water_tempQ);
-        Qclear(swan_tempQ);
-        day++;
+        if (FindSwan(q)) break;
+        FindWater();
+        ans++;
     }
 
-    cout << day;
+    cout << ans;
     return 0;
 }
