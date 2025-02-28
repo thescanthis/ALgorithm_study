@@ -1,35 +1,44 @@
-#include<iostream>
-#include<stack>
-#include<algorithm>
+// Online C++ compiler to run C++ program online
+#include <bits/stdc++.h>
 using namespace std;
 
-int main(void)
-{
-    string s;
-    cin>>s;
-    sort(s.begin(),s.end());
+string str;
+
+int arr[200]={};
+
+string ans;
+int flag;
+char mid;
+
+int main() {
     
-    stack<char> l,r;
-    char center=0;
-    for(int i=0; i<s.size();)
+    std::cin>>str;
+
+    
+    for(char a : str) arr[a]++;
+    
+    for(int i='z'; i>='A'; i--)
     {
-        if(s[i]==s[i+1]){l.push(s[i]);r.push(s[i+1]); i+=2;}
-        else
+        if(arr[i])
         {
-            //첫번째 등장하는 홀수 갯수의 문자이다.
-            //나중에 중앙에 위치해야 하기때문에 기억해둔다.
-            if(center=='\0') {center=s[i]; i++;}
-            else
+            if(arr[i] & 1)
             {
-                // 홀수 갯수의 문자가 2번째 등장하는 상황이다.
-                //절대로 펠린드룸 문자가 될 수 없다.
-                cout<<"I'm Sorry Hansoo";
-                return 0;
+                mid = char(i); flag++;
+                arr[i]--;
+            }
+            
+            if(flag == 2) break;
+            for(int j=0; j<arr[i]; j+=2)
+            {
+                ans=char(i)+ans;
+                ans+=char(i);
             }
         }
     }
-    if(center!='\0') r.push(center);
-    while(!l.empty()){r.push(l.top());l.pop();}
-    while(!r.empty()) {cout<<r.top();r.pop();}
+    
+    if(mid) ans.insert(ans.begin()+ans.size()/2,mid);
+    if(flag == 2) cout<<"I'm Sorry Hansoo\n";
+    else cout<<ans<<'\n';
+    
     return 0;
 }
