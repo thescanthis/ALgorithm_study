@@ -16,8 +16,6 @@ using namespace std;
 int n;
 stack<char> st;
 int _max = 0;
-int arr[200001] = {};
-
 int main()
 {
 	ios_base::sync_with_stdio(false);
@@ -26,30 +24,24 @@ int main()
 	cin >> n;
 	
 	stack<int> st;
+	st.push(-1);
 	for (int i = 0; i < n; i++)
 	{
 		char s;
 		cin >> s;
 		if (s == '(') st.push(i);
-		else {
+		if (s == ')')
+		{
+			st.pop();
 			if (!st.empty()) {
-				arr[st.top()] = 1;
-				arr[i] = 1;
-				st.pop();
+				_max = max(_max, i - st.top());
+			}
+			else {
+				st.push(i);
 			}
 		}
 	}
 
-	int cnt = 0;
-	for (int i = 0; i < n; i++)
-	{
-		if (arr[i] == 1) cnt++;
-		else {
-			cnt = 0;
-		}
-
-		_max = max(_max, cnt);
-	}
 	cout << _max;
 	return 0;
 }
